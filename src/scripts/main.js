@@ -8,7 +8,7 @@ let lastIndex = null;
 let isAsc = true;
 
 function sortTable(index) {
-  const tableSort = [...table.querySelectorAll('tbody>tr')];
+  const tableSort = [...table.querySelectorAll('tbody > tr')];
   const tbodyOld = table.querySelector('tbody');
 
   const cleanNumber = (str) => Number(str.replace(/[^\d.-]+/g, ''));
@@ -21,28 +21,29 @@ function sortTable(index) {
   }
 
   tableSort.sort((a, b) => {
-    let aText = a.cells[index].textContent;
-    let bText = b.cells[index].textContent;
+    const aText = a.cells[index].textContent.trim();
+    const bText = b.cells[index].textContent.trim();
 
-    if (!isAsc) {
-      bText = a.cells[index].textContent;
-      aText = b.cells[index].textContent;
+    const aNum = cleanNumber(aText);
+    const bNum = cleanNumber(bText);
+
+    const isNumeric =
+      !isNaN(aNum) &&
+      !isNaN(bNum) &&
+      aText.match(/^-?[\d,.]+$/) &&
+      bText.match(/^-?[\d,.]+$/);
+
+    if (isNumeric) {
+      return (aNum - bNum) * (isAsc ? 1 : -1);
     }
 
-    const isValid = !isNaN(cleanNumber(bText));
-    const isNumber = cleanNumber(aText) && cleanNumber(bText);
-
-    if (isValid && isNumber) {
-      return cleanNumber(aText) - cleanNumber(bText);
-    }
-
-    return aText.localeCompare(bText);
+    return aText.localeCompare(bText) * (isAsc ? 1 : -1);
   });
 
   tbodyOld.innerHTML = '';
 
-  for (const key of tableSort) {
-    tbodyOld.appendChild(key);
+  for (const row of tableSort) {
+    tbodyOld.appendChild(row);
   }
 }
 
@@ -169,9 +170,8 @@ form.addEventListener('submit', (e) => {
 
   if (obj.name.length < 4) {
     pushNotification(
-      'name',
-      'Message example.\n ' +
-        'Notification should contain title and description.',
+      'Помилка',
+      "Коротке ім'я.\n " + "Ім'я повинно містити хочаб 4 символи.",
       'error',
     );
 
@@ -180,9 +180,8 @@ form.addEventListener('submit', (e) => {
 
   if (obj.age < 18 || obj.age > 90) {
     pushNotification(
-      'age',
-      'Message example.\n ' +
-        'Notification should contain title and description.',
+      'Помилка',
+      'Некоректний вік.\n ' + 'Введіть число від 18 до 90 років.',
       'error',
     );
 
@@ -191,9 +190,8 @@ form.addEventListener('submit', (e) => {
 
   if (obj.position.trim().length === 0) {
     pushNotification(
-      'position',
-      'Message example.\n ' +
-        'Notification should contain title and description.',
+      'Помилка',
+      'Некоректна посада.\n ' + 'Введіть посаду.',
       'error',
     );
 
@@ -220,9 +218,8 @@ form.addEventListener('submit', (e) => {
   form.reset();
 
   pushNotification(
-    'Done!',
-    'Message example.\n ' +
-      'Notification should contain title and description.',
+    'Успіх!',
+    'Успішно.\n ' + 'Працівника додано в список.',
     'success',
   );
 });
