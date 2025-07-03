@@ -11,7 +11,8 @@ function sortTable(index) {
   const tableSort = [...table.querySelectorAll('tbody > tr')];
   const tbodyOld = table.querySelector('tbody');
 
-  const cleanNumber = (str) => Number(str.replace(/[^\d.-]+/g, ''));
+  const cleanNumber = (str) =>
+    parseFloat(str.replace(/[^0-9.-]+/g, '').replace(',', ''));
 
   if (lastIndex === index) {
     isAsc = !isAsc;
@@ -27,13 +28,9 @@ function sortTable(index) {
     const aNum = cleanNumber(aText);
     const bNum = cleanNumber(bText);
 
-    const isNumeric =
-      !isNaN(aNum) &&
-      !isNaN(bNum) &&
-      aText.match(/^-?[\d,.]+$/) &&
-      bText.match(/^-?[\d,.]+$/);
+    const isNumber = !isNaN(aNum) && !isNaN(bNum);
 
-    if (isNumeric) {
+    if (isNumber) {
       return (aNum - bNum) * (isAsc ? 1 : -1);
     }
 
@@ -41,10 +38,7 @@ function sortTable(index) {
   });
 
   tbodyOld.innerHTML = '';
-
-  for (const row of tableSort) {
-    tbodyOld.appendChild(row);
-  }
+  tableSort.forEach((row) => tbodyOld.appendChild(row));
 }
 
 title.forEach((element, index) => {
