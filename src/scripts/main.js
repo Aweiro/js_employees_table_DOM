@@ -73,10 +73,10 @@ const form = document.createElement('form');
 
 form.className = 'new-employee-form';
 
-const formInpuns = ['Name', 'Position', 'Office', 'Age', 'Salary'];
+const formInputs = ['Name', 'Position', 'Office', 'Age', 'Salary'];
 
-for (const key of formInpuns) {
-  let input = document.createElement('input');
+for (const key of formInputs) {
+  let input;
   let type = 'text';
   const label = document.createElement('label');
 
@@ -101,16 +101,20 @@ for (const key of formInpuns) {
 
       input.appendChild(newOption);
     }
-  }
+  } else {
+    input = document.createElement('input');
 
-  if (key === 'Age' || key === 'Salary') {
-    type = 'number';
+    if (key === 'Age' || key === 'Salary') {
+      type = 'number';
+    }
+
+    input.setAttribute('type', type);
   }
 
   input.setAttribute('name', key.toLocaleLowerCase());
   input.setAttribute('data-qa', key.toLocaleLowerCase());
-  input.setAttribute('type', type);
   input.setAttribute('required', '');
+
   label.textContent = key + ': ';
   form.appendChild(label);
   label.appendChild(input);
@@ -224,7 +228,7 @@ form.addEventListener('submit', (e) => {
 });
 
 tbody.addEventListener('dblclick', (e) => {
-  const link = e.target.closest('tr>td');
+  const link = e.target.closest('td');
 
   if (!link) {
     return;
